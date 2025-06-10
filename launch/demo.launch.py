@@ -38,12 +38,13 @@ def generate_launch_description():
     )
     ld.add_action(cmd_node)
     
+    slam_config = "/home/imech/ros2_ws/src/spot_bringup/config/slam_params.yaml"
     slam_launch = os.path.join(
         get_package_share_directory("slam_toolbox"), 'launch', "online_async_launch.py")
-    ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(slam_launch)))
+    ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(slam_launch),launch_arguments={"slam_params_file": slam_config}.items()))
     
     spot_config = "/home/imech/ros2_ws/src/spot_bringup/config/spot_ros_example.yaml"
     spot_launch = os.path.join(get_package_share_directory('spot_driver'),'launch',"spot_driver.launch.py")
-    ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(spot_launch),launch_arguments={"config_file": spot_config}.items()))
+    #ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(spot_launch),launch_arguments={"config_file": spot_config}.items()))
 
     return ld
