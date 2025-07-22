@@ -5,7 +5,7 @@
     # Spot Login Information
     username: "admin"
     password: "r3k9j0bwr8yc"
-    hostname: "10.0.0.3"
+    hostname: "192.168.50.3"
 
     # Status Updates from Spot
     metrics_rate: 0.04
@@ -19,7 +19,7 @@
 
     # Estop Parameters
     estop_timeout: 9.0
-    start_estop: False
+    start_estop: True
 
     preferred_odom_frame: "odom" # Allowed values are: [odom, vision], without a prefix. This will be used in the odometry topic. https://dev.bostondynamics.com/docs/concepts/geometry_and_frames.html?highlight=frame#frames-in-the-spot-robot-world for more info.
     tf_root: "odom" # Allowed values are: [odom, vision, body], without a prefix. This will set the root frame in your TF tree.

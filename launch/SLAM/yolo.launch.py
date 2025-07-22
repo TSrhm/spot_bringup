@@ -33,48 +33,20 @@ def generate_launch_description():
     )
     #1.5708 0.7854
 
-    
-    octomap = os.path.join(
-        get_package_share_directory("octomap_server2"), 'launch', "octomap_server_launch.py")
-    ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(octomap),launch_arguments={"input_cloud_topic": "/genz/local_map","frame_id": "odom", "base_frame_id": "os_lidar"}.items()))
-    
-  
-    imu = Node(
-    package='imu_filter_madgwick', 
-    executable='imu_filter_madgwick_node',
-    parameters=[{
-    'use_mag': False,
-    "world_frame": "imu_link",
-    "publish_tf": False
-    }],
-    remappings=[('imu/data_raw', 'imu/data_raw'),('imu/data', 'imu/filtered')]
-    )
-
-    slam_config = os.path.join(
-        get_package_share_directory("spot_bringup"),
-        "config",
-        "lidarslam.yaml"
-    )
-
-    slam_launch = os.path.join(
-        get_package_share_directory("lidarslam"),
-        "launch",
-        "lidarslam.launch.py"
-    )
-
-    slam = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(slam_launch),
-        launch_arguments={
-            "slam_params_file": slam_config,
-            "use_sim_time": use_sim_time
-        }.items()
-    )
-
-    # Bag record
     bag_record = ExecuteProcess(
         cmd=['ros2', 'bag', 'record', '--all'],
         output='screen'
     )
+    
+    yolo = os.path.join(get_package_share_directory("yolo_bringup"), 'launch', "yolo.launch.py")
+   
+   
+    yolo_launch =IncludeLaunchDescription(PythonLaunchDescriptionSource(yolo),)
+    
+    slam_config = "/home/imech/ros2_ws/src/spot_bringup/config/slam_params1.yaml"
+    slam_launch = os.path.join(
+        get_package_share_directory("slam_toolbox"), 'launch', "online_async_launch.py")
+    slam = IncludeLaunchDescription(PythonLaunchDescriptionSource(slam_launch),launch_arguments={"slam_params_file": slam_config}.items())
 
     # RViz
     rviz = Node(
@@ -82,7 +54,7 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         output='screen',
-        arguments=['-d', '/home/imech/ros2_ws/src/spot_bringup/config/lidarslam.rviz'],
+        arguments=['-d', '/home/imech/ros2_ws/src/spot_bringup/config/yolo.rviz'],
         parameters=[{'use_sim_time': use_sim_time}]
     )
 
@@ -105,10 +77,10 @@ def generate_launch_description():
         use_sim_time_arg,
         tf1,
         tf2,
-        slam,
         bag_record,
         rviz,
         bag_play,
-        imu
+        yolo_launch,
+        slam
     ])
 

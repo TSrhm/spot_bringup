@@ -36,14 +36,14 @@ def generate_launch_description():
         get_package_share_directory("rtabmap_examples"), 'launch', "lidar3d.launch.py")
    
    
-    ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(slam_launch),launch_arguments={"lidar_topic": "/ouster/points", 
-     'imu_topic': '/imu/filtered',
-     "frame_id": "imu_link",
-     'scan_cloud': "ouster/points",
-
-     }.items())) 
+    ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(slam_launch),launch_arguments={"lidar_topic": "/ouster/points", "frame_id": "os_sensor",}.items())) 
     
     ld.add_action(actions.ExecuteProcess( cmd=['ros2', 'bag', 'record', "--all"],output='screen' ))
+    
+    octomap = os.path.join(
+        get_package_share_directory("octomap_server2"), 'launch', "octomap_server_launch.py")
+    ld.add_action(IncludeLaunchDescription(PythonLaunchDescriptionSource(octomap),launch_arguments={"input_cloud_topic": "/genz/local_map","frame_id": "odom", "base_frame_id": "os_lidar"}.items()))
+    
 
     
     rviz_node = Node(
